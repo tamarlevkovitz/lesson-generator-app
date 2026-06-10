@@ -27,4 +27,4 @@
     ├── src/
     │   ├── components/     # Modular and reusable UI components
     │   ├── services/       # Centralized API Service layer (Axios)
-    │   └── App.tsx         # Application root container and state machine
+    │   └── App.tsx         # Application root container and state machine# lesson-generator-app
