@@ -1,0 +1,47 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  name      String
+  prompts   Prompt[]
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id            Int           @id @default(autoincrement())
+  name          String
+  subCategories SubCategory[] // קשר של קטגוריה אחת להרבה תתי-קטגוריות
+  prompts       Prompt[]
+}
+
+model SubCategory {
+  id         Int      @id @default(autoincrement())
+  name       String
+  categoryId Int      @map("category_id")
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  prompts    Prompt[]
+}
+
+model Prompt {
+  id            Int         @id @default(autoincrement())
+  userId        Int         @map("user_id")
+  categoryId    Int         @map("category_id")
+  subCategoryId Int         @map("sub_category_id")
+  prompt        String      @db.Text
+  response      String      @db.Text
+  createdAt     DateTime    @default(now()) @map("created_at")
+
+  // הגדרת קשרי הגומלין (Constraints)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category    Category    @relation(fields: [categoryId], references: [id])
+  subCategory SubCategory @relation(fields: [subCategoryId], references: [id])
+}
